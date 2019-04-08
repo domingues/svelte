@@ -18,7 +18,9 @@
 	let show_contents = false;
 
 	onMount(() => {
-		const anchors = container.querySelectorAll('[id]');
+		// don't update `active_section` for headings below level 3, see _sections.js
+		const anchors = container.querySelectorAll('[id]:not([data-scrollignore])');
+
 		let positions;
 
 		const onresize = () => {
@@ -351,7 +353,7 @@
 		<section data-id={section.slug}>
 			<h2>
 				<span class="offset-anchor" id={section.slug}></span>
-				<a href="#{section.slug}" class="anchor" aria-hidden></a>
+				<a href="docs#{section.slug}" class="anchor" aria-hidden></a>
 
 				{section.metadata.title}
 				<small>

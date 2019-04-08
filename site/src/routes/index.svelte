@@ -1,6 +1,7 @@
 <script>
 	import Icon from '../components/Icon.svelte';
 	import Logo from '../components/Logo.svelte';
+	import WhosUsingSvelte from '../components/WhosUsingSvelte/index.svelte';
 	import IntersectionObserver from '../components/IntersectionObserver.svelte';
 	// import Lazy from '../components/Lazy.svelte';
 	import ReplWidget from '../components/Repl/ReplWidget.svelte';
@@ -158,7 +159,8 @@
 		border-radius: 50%;
 		text-indent: -9999px;
 		display: inline-block;
-		background-size: 100% 100%;
+		background: no-repeat url(/contributors.jpg);
+		background-size: auto 102%;
 		margin: 0 0.5em 0.5em 0;
 		border: 1px solid var(--second);
 	}
@@ -247,7 +249,7 @@ npm run dev & open http://localhost:5000
 <div class="examples">
 	<section class="container example linkify">
 		<div>
-			<p>Svelte components are written in HTML files. Just add data.</p>
+			<p>Svelte components are built on top of HTML. Just add data.</p>
 		</div>
 
 		<div class="repl-container">
@@ -306,9 +308,10 @@ npm run dev & open http://localhost:5000
 	</section>
 </div>
 
-<section class="container linkify">
+<section class="container">
 	<h3>Who's using Svelte?</h3>
-	<p>TODO. See <a href="https://github.com/sveltejs/svelte.technology/issues/379">this issue</a></p>
+
+	<WhosUsingSvelte/>
 </section>
 
 <section class="container">
@@ -316,11 +319,11 @@ npm run dev & open http://localhost:5000
 
 	<p class="linkify">Svelte is free and open source software, made possible by the work of dozens of volunteers. <a href="https://github.com/sveltejs/svelte">Join us!</a></p>
 
-	{#each contributors as contributor}
+	{#each contributors as contributor, i}
 		<a
 			class="contributor"
-			style="background-image: url({contributor.src})"
-			href="https://github.com/{contributor.name}"
-		>{contributor.name}</a>
+			style="background-position: {100 * i / (contributors.length - 1)}% 0"
+			href="https://github.com/{contributor}"
+		>{contributor}</a>
 	{/each}
 </section>

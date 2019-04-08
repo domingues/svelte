@@ -183,7 +183,7 @@ Stores have special significance inside Svelte components. Their values can be r
 ```
 
 * `store = writable(value: any)`
-* `store = writable(value: any, () => () => void)`
+* `store = writable(value: any, (set: (value: any) => void) => () => void)`
 
 ---
 
@@ -205,7 +205,7 @@ count.update(n => n + 1); // logs '2'
 
 ---
 
-If a function is passed as the second argument, it will be called when the number of subscribers goes from zero to one (but not from one to two, etc). That function can return another function that is called when the number of subscribers goes from one to zero.
+If a function is passed as the second argument, it will be called when the number of subscribers goes from zero to one (but not from one to two, etc). That function will be passed a `set` function which changes the value of the store. It must return a `stop` function that is called when the subscriber count goes from one to zero.
 
 ```js
 import { writable } from 'svelte/store';
@@ -224,25 +224,24 @@ const unsubscribe = count.subscribe(value => {
 unsubscribe(); // logs 'no more subscribers'
 ```
 
-* `store = readable((set: (value: any) => void) => () => void)`
-* `store = readable((set: (value: any) => void) => () => void, value: any)`
+* `store = readable(value: any, (set: (value: any) => void) => () => void)`
 
 ---
 
-Creates a store whose value cannot be set from 'outside'. Instead, the function passed to `readable`, which is called when the subscriber count goes from zero to one, must call the provided `set` value. It must return a function that is called when the subscriber count goes from one to zero.
+Creates a store whose value cannot be set from 'outside', the first argument is the store's initial value.
 
-If a second argument is provided, it becomes the store's initial value.
+The second argument to `readable` is the same as the second argument to `writable`, except that it is required with `readable` (since otherwise there would be no way to update the store value).
 
 ```js
 import { readable } from 'svelte/store';
 
-const time = readable(set => {
+const time = readable(new Date(), set => {
 	const interval = setInterval(() => {
 		set(new Date());
 	}, 1000);
 
 	return () => clearInterval(interval);
-}, new Date());
+});
 ```
 
 * `store = derive(a, callback: (a: any) => any)`
@@ -393,7 +392,7 @@ A `spring` store gradually changes to its target value based on its `stiffness` 
 
 As with `tweened` stores, `set` and `update` return a Promise that resolves if the spring settles. The `store.stiffness` and `store.damping` properties can be changed while the spring is in motion, and will take immediate effect.
 
-[See a full example here.](tutorial/spring)
+[See a full example on the spring tutorial.](tutorial/spring)
 
 ```html
 <script>
